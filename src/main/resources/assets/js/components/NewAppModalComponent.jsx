@@ -133,6 +133,10 @@ var NewAppModalComponent = React.createClass({
       modelAttrs.instances = parseInt(modelAttrs.instances, 10);
     }
 
+    if ("image" in modelAttrs) {
+      this.state.model.set("container", {docker: {image: modelAttrs.image}});
+    }
+
     this.state.model.set(modelAttrs);
 
     if (this.state.model.isValid()) {
@@ -189,6 +193,13 @@ var NewAppModalComponent = React.createClass({
                 errors={errors}>
               <input autoFocus required />
             </FormGroupComponent>
+              <FormGroupComponent
+                  attribute="image"
+                  label="Image"
+                  model={model}
+                  errors={errors}>
+                  <input autoFocus required />
+              </FormGroupComponent>
             <FormGroupComponent
                 attribute="cpus"
                 label="CPUs"
@@ -218,47 +229,6 @@ var NewAppModalComponent = React.createClass({
               <input min="1" step="1" type="number" required />
             </FormGroupComponent>
             <hr />
-            <h4>Optional Settings</h4>
-            <FormGroupComponent
-                attribute="cmd"
-                label="Command"
-                model={model}
-                errors={errors}>
-              <textarea style={{resize: "vertical"}} />
-            </FormGroupComponent>
-            <FormGroupComponent
-                attribute="executor"
-                label="Executor"
-                model={model}
-                errors={errors}>
-              <input
-                pattern={App.VALID_EXECUTOR_PATTERN}
-                title="Executor must be the string '//cmd', a string containing only single slashes ('/'), or blank." />
-            </FormGroupComponent>
-            <FormGroupComponent
-                attribute="ports"
-                help="Comma-separated list of numbers. 0's (zeros) assign random ports. (Default: one random port)"
-                label="Ports"
-                model={model}
-                errors={errors}>
-              <input />
-            </FormGroupComponent>
-            <FormGroupComponent
-                attribute="uris"
-                help="Comma-separated list of valid URIs."
-                label="URIs"
-                model={model}
-                errors={errors}>
-              <input />
-            </FormGroupComponent>
-            <FormGroupComponent
-                attribute="constraints"
-                help='Comma-separated list of valid constraints. Valid constraint format is "field:operator[:value]".'
-                label="Constraints"
-                model={model}
-                errors={errors}>
-              <input />
-            </FormGroupComponent>
             <div>
               {errorBlock}
               <input type="submit" className="btn btn-success" value="+ Create" /> <button className="btn btn-default" type="button" onClick={this.destroy}>
