@@ -137,6 +137,17 @@ var NewAppModalComponent = React.createClass({
       this.state.model.set("container", {docker: {image: modelAttrs.image}});
     }
 
+    if ("volumes" in modelAttrs) {
+      var volumesArray = modelAttrs.volumes.split(",");
+
+      var volumes = volumesArray.map(function (volume) {
+        var volumePaths = volume.split(":");
+        return {hostPath: volumePaths[0], containerPath: volumePaths[1], mode: "RW"};
+      });
+
+      this.state.model.set("container", {docker: {image: modelAttrs.image}, volumes: volumes});
+    }
+
     this.state.model.set(modelAttrs);
 
     if (this.state.model.isValid()) {
@@ -193,13 +204,20 @@ var NewAppModalComponent = React.createClass({
                 errors={errors}>
               <input autoFocus required />
             </FormGroupComponent>
-              <FormGroupComponent
-                  attribute="image"
-                  label="Image"
-                  model={model}
-                  errors={errors}>
-                  <input autoFocus required />
-              </FormGroupComponent>
+            <FormGroupComponent
+                attribute="image"
+                label="Image"
+                model={model}
+                errors={errors}>
+                <input required />
+            </FormGroupComponent>
+            <FormGroupComponent
+              attribute="volumes"
+              label="Volumes"
+              model={model}
+              errors={errors}>
+              <input required />
+            </FormGroupComponent>
             <FormGroupComponent
                 attribute="cpus"
                 label="CPUs"
